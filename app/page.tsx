@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ArrowRight, PlusCircle, Wallet } from 'lucide-react'
 
-export default function BilleteraDigital() {
+export default function Home() {
   const [saldo, setSaldo] = useState(1000000) // Saldo inicial de 1,000,000 COP
   const [monto, setMonto] = useState('')
 
@@ -38,7 +38,7 @@ export default function BilleteraDigital() {
   }
 
   return (
-    <div className="container mx-auto p-4">
+    <main className="container mx-auto p-4">
       <Card className="w-full max-w-md mx-auto">
         <CardHeader>
           <CardTitle className="text-2xl font-bold text-center">Mi Billetera Digital</CardTitle>
@@ -87,6 +87,6 @@ export default function BilleteraDigital() {
           Transacciones seguras y rápidas, al estilo Nequi
         </CardFooter>
       </Card>
-    </div>
+    </main>
   )
 }
