@@ -1,11 +1,13 @@
 'use client'
 
 import { useState } from 'react'
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ArrowRight, PlusCircle, Wallet } from 'lucide-react'
+import { Login } from '@/components/Login'
+import { Register } from '@/components/Register'
+import { Dashboard } from '@/components/Dashboard'
+import { Transfer } from '@/components/Transfer'
+import { PayServices } from '@/components/PayServices'
+
+// Resto del código...
 
 export default function Home() {
   const [saldo, setSaldo] = useState(1000000) // Saldo inicial de 1,000,000 COP
