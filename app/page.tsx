@@ -7,88 +7,116 @@ import { Dashboard } from '@/components/Dashboard'
 import { Transfer } from '@/components/Transfer'
 import { PayServices } from '@/components/PayServices'
 
-// Resto del código...
+// Simulación de una base de datos de usuarios
+const users = [
+  { phone: '3001234567', name: 'Usuario 1', balance: 1000000 },
+  { phone: '3009876543', name: 'Usuario 2', balance: 500000 },
+]
+
+// Simulación de servicios disponibles para pagar
+const services = [
+  { id: 1, name: 'Electricidad', icon: '⚡' },
+  { id: 2, name: 'Agua', icon: '💧' },
+  { id: 3, name: 'Internet', icon: '🌐' },
+  { id: 4, name: 'Gas', icon: '🔥' },
+]
 
 export default function Home() {
-  const [saldo, setSaldo] = useState(1000000) // Saldo inicial de 1,000,000 COP
-  const [monto, setMonto] = useState('')
+  const [currentUser, setCurrentUser] = useState(null)
+  const [currentView, setCurrentView] = useState('login')
 
-  const formatearDinero = (cantidad: number) => {
-    return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(cantidad)
-  }
-
-  const enviarDinero = () => {
-    const cantidad = Number(monto)
-    if (cantidad > 0 && cantidad <= saldo) {
-      setSaldo(saldo - cantidad)
-      setMonto('')
-      alert(`Has enviado ${formatearDinero(cantidad)} exitosamente.`)
+  const handleLogin = (phone) => {
+    const user = users.find(u => u.phone === phone)
+    if (user) {
+      setCurrentUser(user)
+      setCurrentView('dashboard')
     } else {
-      alert('Monto inválido o saldo insuficiente.')
+      alert('Usuario no encontrado')
     }
   }
 
-  const recargarCuenta = () => {
-    const cantidad = Number(monto)
-    if (cantidad > 0) {
-      setSaldo(saldo + cantidad)
-      setMonto('')
-      alert(`Has recargado ${formatearDinero(cantidad)} exitosamente.`)
+  const handleRegister = (name, phone) => {
+    if (users.some(u => u.phone === phone)) {
+      alert('Este número de teléfono ya está registrado')
     } else {
-      alert('Por favor ingresa un monto válido.')
+      const newUser = { name, phone, balance: 0 }
+      users.push(newUser)
+      setCurrentUser(newUser)
+      setCurrentView('dashboard')
+    }
+  }
+
+  const handleLogout = () => {
+    setCurrentUser(null)
+    setCurrentView('login')
+  }
+
+  const handleTransfer = (toPhone, amount) => {
+    const recipient = users.find(u => u.phone === toPhone)
+    if (recipient && currentUser.balance >= amount) {
+      setCurrentUser({
+        ...currentUser,
+        balance: currentUser.balance - amount
+      })
+      alert(`Transferencia de ${amount} realizada a ${recipient.name}`)
+    } else {
+      alert('Transferencia fallida. Verifica el número y el saldo.')
+    }
+  }
+
+  const handlePayService = (serviceId, amount) => {
+    if (currentUser.balance >= amount) {
+      setCurrentUser({
+        ...currentUser,
+        balance: currentUser.balance - amount
+      })
+      alert(`Pago de ${amount} realizado por ${services.find(s => s.id === serviceId).name}`)
+    } else {
+      alert('Pago fallido. Saldo insuficiente.')
     }
   }
 
   return (
-    <main className="container mx-auto p-4">
-      <Card className="w-full max-w-md mx-auto">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold text-center">Mi Billetera Digital</CardTitle>
-          <CardDescription className="text-center">Tu dinero, siempre contigo</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="text-center mb-6">
-            <Wallet className="w-12 h-12 mx-auto mb-2 text-primary" />
-            <h2 className="text-xl font-semibold">Saldo Disponible</h2>
-            <p className="text-3xl font-bold text-primary">{formatearDinero(saldo)}</p>
+    <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
+      <div className="relative py-3 sm:max-w-xl sm:mx-auto">
+        <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-light-blue-500 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
+        <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
+          <div className="max-w-md mx-auto">
+            {currentView === 'login' && (
+              <Login 
+                onLogin={handleLogin} 
+                onSwitchToRegister={() => setCurrentView('register')}
+              />
+            )}
+            {currentView === 'register' && (
+              <Register 
+                onRegister={handleRegister}
+                onSwitchToLogin={() => setCurrentView('login')}
+              />
+            )}
+            {currentView === 'dashboard' && currentUser && (
+              <Dashboard 
+                user={currentUser} 
+                onLogout={handleLogout}
+                onNavigate={setCurrentView}
+              />
+            )}
+            {currentView === 'transfer' && currentUser && (
+              <Transfer 
+                onTransfer={handleTransfer}
+                onBack={() => setCurrentView('dashboard')}
+              />
+            )}
+            {currentView === 'payServices' && currentUser && (
+              <PayServices 
+                services={services}
+                onPayService={handlePayService}
+                onBack={() => setCurrentView('dashboard')}
+              />
+            )}
           </div>
-          <Tabs defaultValue="enviar" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="enviar">Enviar Dinero</TabsTrigger>
-              <TabsTrigger value="recargar">Recargar</TabsTrigger>
-            </TabsList>
-            <TabsContent value="enviar">
-              <div className="space-y-4">
-                <Input
-                  type="number"
-                  placeholder="Monto a enviar"
-                  value={monto}
-                  onChange={(e) => setMonto(e.target.value)}
-                />
-                <Button className="w-full" onClick={enviarDinero}>
-                  Enviar <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-              </div>
-            </TabsContent>
-            <TabsContent value="recargar">
-              <div className="space-y-4">
-                <Input
-                  type="number"
-                  placeholder="Monto a recargar"
-                  value={monto}
-                  onChange={(e) => setMonto(e.target.value)}
-                />
-                <Button className="w-full" onClick={recargarCuenta}>
-                  Recargar <PlusCircle className="ml-2 h-4 w-4" />
-                </Button>
-              </div>
-            </TabsContent>
-          </Tabs>
-        </CardContent>
-        <CardFooter className="text-center text-sm text-muted-foreground">
-          Transacciones seguras y rápidas, al estilo Nequi
-        </CardFooter>
-      </Card>
-    </main>
+        </div>
+      </div>
+    </div>
   )
 }
