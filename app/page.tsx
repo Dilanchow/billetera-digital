@@ -1,11 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import { Login } from '@/components/Login'
-import { Register } from '@/components/Register'
-import { Dashboard } from '@/components/Dashboard'
-import { Transfer } from '@/components/Transfer'
-import { PayServices } from '@/components/PayServices'
+import { Login } from '../components/Login'
+import { Register } from '../components/Register'
+import { Dashboard } from '../components/Dashboard'
+import { Transfer } from '../components/Transfer'
+import { PayServices } from '../components/PayServices'
 
 // Simulación de una base de datos de usuarios
 const users = [
