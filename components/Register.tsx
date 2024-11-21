@@ -1,9 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import { Button } from "../components/ui/button"
-import { Input } from "../components/ui/input"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 
 export const Register = ({ onRegister, onSwitchToLogin }) => {
   const [name, setName] = useState('')
@@ -43,10 +43,6 @@ export const Register = ({ onRegister, onSwitchToLogin }) => {
         <Button variant="link" onClick={onSwitchToLogin} className="w-full">
           ¿Ya tienes una cuenta? Inicia sesión
         </Button>
-      </CardFooter>
-    </Card>
-  )
-}
       </CardFooter>
     </Card>
   )
